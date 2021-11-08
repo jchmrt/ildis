@@ -1,3 +1,5 @@
+SECRET_KEY
+
 # Django #
 *.log
 *.pot
