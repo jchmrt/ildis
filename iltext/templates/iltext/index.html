@@ -1,5 +1,13 @@
-<form action="{% url 'iltext:send' %}" method="post">
+{% extends "base.html" %}
+
+
+{% block content %}
+
+{# Display a form #}
+<form action="{% url 'iltext:send' %}" method="post" class="form">
   {% csrf_token %}
-  <input type="text" name="text">
-  <input type="submit" value="Send">
+  <input type="text" name="text" class="form-control" autofocus>
+  <button type="submit" class="btn btn-primary">Send</button>
 </form>
+
+{% endblock %}
