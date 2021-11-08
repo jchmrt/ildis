@@ -4,3 +4,5 @@
 ================================================================================
 
 Django-based webserver to control Interactive Led DISplay.
+
+License: AGPLv3 or (at your option) any later version. See COPYING.
