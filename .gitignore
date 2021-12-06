@@ -10,6 +10,7 @@ media
 
 # Backup files #
 *.bak
+*\~
 # Python #
 *.py[cod]
 *$py.class
