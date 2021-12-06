@@ -26,7 +26,7 @@ with open(str(BASE_DIR) + '/SECRET_KEY') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["192.168.2.169", "213.124.164.79", "leddie.nl"]
 
 
 # Application definition
@@ -75,7 +75,7 @@ LOGGING = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates/'],
+        'DIRS': [BASE_DIR / 'templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,3 +144,11 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Set static root, as suggested by:
+# https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-apache-and-mod_wsgi-on-ubuntu-14-04
+# on 2021-12-06
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+
+# Set login url to the one from django admin
+LOGIN_URL = '/admin/login'
