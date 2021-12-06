@@ -149,6 +149,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-apache-and-mod_wsgi-on-ubuntu-14-04
 # on 2021-12-06
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
-# Set login url to the one from django admin
-LOGIN_URL = '/admin/login'
