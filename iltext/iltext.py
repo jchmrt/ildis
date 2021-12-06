@@ -39,6 +39,9 @@ class Iltext:
 
             for i in range(img.width):
                 arr.append([ pix[i, j] for j in range(img.height) ])
+
+            arr.append([ 0 for j in range(img.height) ])
+
                 
         except:
             self.logger.info("Character not found: " + str(char))
