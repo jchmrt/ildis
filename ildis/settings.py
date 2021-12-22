@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +26,7 @@ with open(str(BASE_DIR) + '/SECRET_KEY') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('ILDIS_DEBUG') == 'TRUE'
 
 ALLOWED_HOSTS = ["192.168.2.169", "213.124.164.79", "leddie.nl"]
 
@@ -58,7 +60,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ildis.urls'
 
-import os
 
 LOGGING = {
     'version': 1,
