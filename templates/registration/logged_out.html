@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <p>Logged out!</p>
-  <a href="{% url 'login'%}">Click here to login again.</a>
+<div class="alert alert-success" role="alert">
+    <h4 class=alert-heading">Logged out!</h4>
+    <hr>
+    <p>
+        Click
+        <a class="alert-link" href="{% url 'login'%}">here</a>
+        to login again.
+    </p>
+</div>
 {% endblock %}

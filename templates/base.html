@@ -8,14 +8,46 @@
   {% bootstrap_css %}
   {% bootstrap_javascript %}
 
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {% block head %}{% endblock %}
 
   <title>{% block title %}Leddie{% endblock %}</title>
 </head>
 
 <body>
-  <div id="content">
-    {% block content %}{% endblock %}
+  <div id="wrapper" class="container-sm">
+
+    <nav class="navbar navbar-expand navbar-light bg-light sticky-top" aria-label="Second navbar example">
+      <div class="container-fluid">
+        <a class="navbar-brand" style="color: #dc3545; font-weight: bold;" href="/">Leddie</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExample02">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ilbright:index'%}">Brightness</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'iltext:index'%}">Text</a>
+            </li>
+          </ul>
+
+          <a href="/accounts/logout" class="nav-link">Logout</a>
+        </div>
+      </div>
+    </nav>
+
+
+    <main id="content">
+      {% block content %}{% endblock %}
+    </main>
   </div>
 </body>
 </html>
