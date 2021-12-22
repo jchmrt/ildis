@@ -16,7 +16,7 @@ class Controller(threading.Thread):
         self.queue = queue
         self.lock = lock
 
-        self.fifo = os.open("/tmp/leddie", os.O_WRONLY)
+        self.fifo = os.open("/home/pi/leddie/socket", os.O_WRONLY)
         self.logger = logging.getLogger(__name__)
         self.previous_time = time.monotonic()
 
@@ -38,6 +38,7 @@ class Controller(threading.Thread):
     def render_all(self):
         if self.active_il:
             self.active_il.render(self)
+            self.render()
 
     def tick(self):
         current_time = time.monotonic()

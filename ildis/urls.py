@@ -21,6 +21,7 @@ urlpatterns = [
     path('', views.index),
     path('brightness/', include('ilbright.urls')),
     path('text/', include('iltext.urls')),
+    path('camera/', include('ilcam.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
 ]

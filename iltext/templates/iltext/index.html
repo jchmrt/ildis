@@ -1,13 +1,54 @@
 {% extends "base.html" %}
 
+{% block head %}
+{% load static %}
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+
+{% endblock %}
+
 
 {% block content %}
 
 {# Display a form #}
 <form action="{% url 'iltext:send' %}" method="post" class="form">
   {% csrf_token %}
-  <input type="text" name="text" class="form-control" autofocus>
+
+  <div class="mb-3">
+    <input type="text" name="text" class="form-control"
+           id="text-input" autofocus>
+  </div>
+
+  <div class="mb-3">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox"
+             name="waves"
+             id="waves-checkbox" checked>
+      <label class="form-check-label" for="waves-checkbox">
+        Waves (<span id="cur-back-bright">0.4</span>)
+      </label>
+      <input type="range" class="form-range"
+             name="waves-bright"
+             id="background-brightness-range"
+             min="0" max="1" step="0.01"
+             value="0.4"> 
+    </div>
+  </div>
+  
   <button type="submit" class="btn btn-primary">Send</button>
 </form>
+
+
+<script>
+
+  function changeBrightness(e) {
+    $("#cur-back-bright").text($("#background-brightness-range").val());
+  }
+
+  $(window).on("load", changeBrightness);
+  $("#background-brightness-range").change(changeBrightness);
+  $("#background-brightness-range").on('input', changeBrightness);
+
+</script>
 
 {% endblock %}

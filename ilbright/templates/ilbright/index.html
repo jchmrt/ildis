@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'ilbright/style.css' %}">
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'ilbright/ilbright.js' %}"></script>
+
+{% endblock %}
+
+{% block content %}
+
+{# Display a form #}
+<form action="{% url 'ilbright:send' %}" method="post" class="form">
+  {% csrf_token %}
+  <input id="range" type="range" min="0" max="255"
+         name="brightness" class="form-range" autofocus
+         oninput="showBrightness()"
+         onchange="changeBrightness()">
+  <label>brightness: <span id="cur-brightness">0</span></label>
+  <br>
+  <button type="submit" class="btn btn-primary">Send</button>
+</form>
+
+{% endblock %}

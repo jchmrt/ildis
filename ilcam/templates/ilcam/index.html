@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% load static %}
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script>let csrf_token = "{{ csrf_token }}"</script>
+
+<script>
+  var width = 15;
+  var height = 10;
+
+  var streaming = false;
+  var video = null;
+  var canvas = null;
+
+  function shareScreen() {
+    startup(false, false);
+  }
+  function shareFrontCamera() {
+    startup(true, true);
+  }
+  function shareBackCamera() {
+    startup(true, false);
+  }
+
+  function startup(useCamera, useFront) {
+    video = document.getElementById('video');
+    canvas = document.getElementById('canvas');
+    console.log(useCamera);
+    let mediaDevice = useCamera ?
+      navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: useFront ? 'user' : 'environment',
+        },
+        audio: false
+      }) :
+      navigator.mediaDevices.getDisplayMedia();
+
+    mediaDevice.then(function(stream) {
+      video.srcObject = stream;
+      video.play();
+    }).catch(function(err) {
+      console.log("An error occurred: " + err);
+    });
+
+    video.addEventListener('canplay', function(ev){
+      if (!streaming) {
+        video.setAttribute('width', 15);
+        video.setAttribute('height', 10);
+        canvas.setAttribute('width', 15);
+        canvas.setAttribute('height', 10);
+        streaming = true;
+
+        sendPic()
+      }
+    }, false);
+  }
+
+  function sendPic() {
+    var context = canvas.getContext('2d');
+    if (width && height) {
+      canvas.width = 15;
+      canvas.height = 10;
+      // context.save();
+      // context.translate(15, 0);
+      // context.rotate(Math.PI / 2)
+      context.drawImage(video, 0, 0, 15, 10);
+      // context.restore();
+      
+
+      var data = canvas.toDataURL('image/png');
+
+      $.post("send/", {
+        csrfmiddlewaretoken: csrf_token,
+        image: data
+      }, sendPic);
+    }
+  }
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="contentarea">
+  <div class="camera" hidden>
+    <video id="video">Video stream not available.</video>
+  </div>
+  <div class="container-fluid">
+    <div class="row mb-3">
+      <canvas id="canvas" style="max-width: 300px; width: 100%;
+                                 image-rendering: pixelated;
+                                 ">
+      </canvas>
+    </div>
+    <div class="row mb-3">
+      <div class="col-4">
+           <button class="btn btn-primary" onclick="shareScreen()">Share Screen</button>
+      </div>
+      <div class="col-4">
+        <button class="btn btn-primary" onclick="shareBackCamera()">Share Back Camera</button>
+      </div>
+      <div class="col-4">
+        <button class="btn btn-primary" onclick="shareFrontCamera()">Share Front Camera</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

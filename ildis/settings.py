@@ -24,7 +24,7 @@ with open(str(BASE_DIR) + '/SECRET_KEY') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["192.168.2.169", "213.124.164.79", "leddie.nl"]
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'ildis',
     'ilcon',
     'iltext',
+    'ilcam',
     'ilbright',
 ]
 
@@ -63,13 +64,18 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
+    'loggers': {
+        'root': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
 
@@ -154,3 +160,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/'
+
+# Bootstrap enable javascript
+BOOTSTRAP5 = {
+    'javascript_in_head': True,
+    # TODO: set local sources
+};

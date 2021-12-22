@@ -5,7 +5,7 @@ from PIL import Image as image
 from django.conf import settings
 
 class Iltext:
-    def __init__(self, text):
+    def __init__(self, text, color=(255, 255, 255), background=None):
         self.logger = logging.getLogger(__name__)
 
         self.text = text
@@ -14,6 +14,9 @@ class Iltext:
         
         self.t = 0.0
         self.offset = 0
+
+        self.color = color
+        self.background = background
 
 
     def init_arr(self):
@@ -55,6 +58,9 @@ class Iltext:
 
 
     def tick(self, ctrl, delta):
+        if self.background:
+            self.background.tick(ctrl, delta)
+
         self.t = self.t + delta
         if self.t >= 0.07:
             self.t = 0.0
@@ -63,8 +69,16 @@ class Iltext:
             if self.offset > len(self.arr) - 1:
                 self.offset = 0
 
+
+    def draw_background(self, ctrl):
+        if self.background:
+            self.background.render(ctrl)
+        else:
+            ctrl.fill(0, 0, 0)
+        
+
     def render(self, ctrl):
-        ctrl.fill(0, 0, 0)
+        self.draw_background(ctrl)
 
         for i in range(ctrl.WIDTH):
             for j in range(ctrl.HEIGHT):
@@ -72,8 +86,10 @@ class Iltext:
                 y = j
                 try:
                     if self.arr[x][y] == 255:
-                        ctrl.set_pixel(i, j, 255, 255, 255)
+                        ctrl.set_pixel(i, j,
+                                       self.color[0],
+                                       self.color[1],
+                                       self.color[2])
                 except:
                     pass
 
-        ctrl.render()
