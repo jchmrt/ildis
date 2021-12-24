@@ -5,22 +5,6 @@ import logging
 from ilcon.waves import Waves
 from ilcon.controller import Controller
 
-class Ilempty:
-    def __init__(self):
-        self.rendered = False
-
-    def tick(self, ctrl, delta):
-        pass
-
-    def render(self, ctrl):
-        if not self.rendered:
-            for i in range(15):
-                for j in range(10):
-                    ctrl.set_pixel(i, j, 0, 0, 0)
-
-            ctrl.render()
-            self.rendered = True
-
 
 class Ilcon:
 
@@ -38,7 +22,7 @@ class Ilcon:
 
     def clear(self):
         with self.lock:
-            self.queue.put(Ilempty())
+            self.queue.put(None)
 
     def set_brightness(self, brightness):
         self.controller.set_brightness(brightness)

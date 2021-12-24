@@ -50,8 +50,13 @@ class Controller(threading.Thread):
 
     def process(self, item):
         try:
-            self.active_il = item
-            self.previous_time = time.monotonic()
+            if not item:
+                self.fill(0, 0, 0)
+                self.render()
+                self.active_il = None
+            else:
+                self.active_il = item
+                self.previous_time = time.monotonic()
 
         except:
             self.logger.warning("Error processing controller command")
