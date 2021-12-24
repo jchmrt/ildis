@@ -26,7 +26,7 @@ with open(str(BASE_DIR) + '/SECRET_KEY') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('ILDIS_DEBUG') == 'TRUE'
+DEBUG = True # os.environ.get('ILDIS_DEBUG') == 'TRUE'
 
 ALLOWED_HOSTS = ["192.168.2.169", "213.124.164.79", "leddie.nl", "localhost"]
 

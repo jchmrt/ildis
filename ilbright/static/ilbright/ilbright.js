@@ -11,7 +11,7 @@ function showBrightness() {
 let done = true;
 function changeBrightness() {
   done = false;
-  $.post('/brightness/send/', $('.form').serialize(), function () {
+  $.post('/admin/brightness/send/', $('.form').serialize(), function () {
     done = true;
   });
 }

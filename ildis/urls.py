@@ -17,11 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from . import views
 
+app_name = 'ildis'
+
 urlpatterns = [
-    path('', views.index),
-    path('brightness/', include('ilbright.urls')),
-    path('text/', include('iltext.urls')),
-    path('camera/', include('ilcam.urls')),
-    path('admin/', admin.site.urls),
+    path('', views.index, name='index'),
+    path('admin/', views.index_admin, name='index_admin'),
+    path('admin/brightness/', include('ilbright.urls')),
+    path('admin/text/', include('iltext.urls')),
+    path('admin/camera/', include('ilcam.urls')),
+    path('admin/admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
 ]

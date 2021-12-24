@@ -1,0 +1,30 @@
+{% extends "base_admin.html" %}
+
+
+{% block content %}
+
+<div class="container g-3">
+  <div class="card mb-3">
+    <div class="card-header bg-danger text-white">
+      <b>LEDs</b>
+    </div>
+
+    <ul class="list-group list-group-flush">
+      <a class="list-group-item" href="{% url 'ilbright:index' %}">Brightness</a>
+      <a class="list-group-item" href="{% url 'iltext:index' %}">Text</a>
+      <a class="list-group-item" href="{% url 'ilcam:index' %}">Camera</a>
+    </ul>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header bg-warning">
+      <b>Administration</b>
+    </div>
+
+    <ul class="list-group list-group-flush">
+      <a class="list-group-item" href="{% url 'admin:index' %}">Admin</a>
+    </ul>
+  </div>
+</div>
+
+{% endblock %}
