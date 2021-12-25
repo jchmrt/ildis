@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'iltext',
     'ilcam',
     'ilbright',
+    'suggestions',
 ]
 
 MIDDLEWARE = [

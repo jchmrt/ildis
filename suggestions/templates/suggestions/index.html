@@ -1,0 +1,79 @@
+{% extends "base_public.html" %}
+
+
+{% block content %}
+
+<div class="p-5 mb-4 bg-light rounded-3">
+  <h1 class="display-6 fw-bold" style="color: #dc3545">
+    Welcome to Leddie!
+  </h1>
+
+  <p class="lead">
+    The website for the LED grid on my window. It consists of 150 RGB led lights that
+    together with some custom software can display anything. From images to videos, from text to
+    colors!
+  </p>
+
+  <p>
+    For this year, the display will start counting down to the new year. Once we enter 2020, the
+    display will show any images <em>you</em> submit. So if you have a wish for the new year, or
+    simply want to send a nice message to the students of Hoogeveldt, <span class="text-success
+    fw-bold">submit it in the form below!</span>
+</div>
+
+
+
+<div class="card mb-3">
+  <div class="card-header text-white bg-success">
+    <b>Send a New Years message</b>
+  </div>
+  <div class="card-body">
+    <form action="{% url 'suggestions:send' %}" method="post"
+          class="form">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="suggestion-text-input" class="form-label">
+          Message*
+        </label>
+        <input type="text" class="form-control" id="suggestion-text-input"
+               maxlength="200" required
+               name="suggestion-text">
+        <div class="form-text">
+          Keep your message short and sweet :)
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <div class="col-7">
+          <label for="suggestion-sender-input" class="form-label">
+            Your name*
+          </label>
+          <input type="text" class="form-control" id="suggestion-sender-input"
+                 maxlength="100" required
+                 name="suggestion-sender">
+        </div>
+        <div class="col-5">
+          <label for="suggestion-hallway-input" class="form-label">
+            Your hallway
+          </label>
+          <input type="number" class="form-control" id="suggestion-hallway-input"
+                 min="0" max="200"
+                 placeholder="Optional"
+                 name="suggestion-hallway">
+        </div>
+      </div>
+
+
+      <div class="row justify-content-between">
+        <div class="text-muted fw-bold form-text col-8">
+        I will look at all messages and reserve the right to remove any messages that aren't nice.
+        </div> 
+        <div class="col-4 text-end">
+        <button type="submit" class="btn btn-success">Submit message</button>
+        </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

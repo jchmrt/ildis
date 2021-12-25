@@ -20,7 +20,7 @@ from . import views
 app_name = 'ildis'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', include('suggestions.urls')),
     path('admin/', views.index_admin, name='index_admin'),
     path('admin/brightness/', include('ilbright.urls')),
     path('admin/text/', include('iltext.urls')),

@@ -22,9 +22,17 @@
 <body>
   <div id="wrapper" class="container-sm">
 
-    <nav class="navbar navbar-expand navbar-light bg-light sticky-top">
+    <nav class="navbar navbar-expand navbar-light bg-white
+                border-bottom
+                sticky-top">
       <div class="container-fluid">
         <a class="navbar-brand" style="color: #dc3545; font-weight: bold;" href="/">Leddie</a>
+
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index_admin'%}">Admin</a>
+          </li>
+        </ul>
       </div>
     </nav>
 
@@ -32,6 +40,21 @@
     <main id="content">
       {% block content %}{% endblock %}
     </main>
+
+    <footer class="footer mb-3 py-3 border-top text-muted"
+            style="font-size: 80%; margin-top: 4em;">
+      <div class="row justify-content-between">
+        <div class="col-6">
+          This website is <a class="text-reset"
+          href="https://github.com/jchmrt/ildis">free and open source
+          software!</a>
+        </div>
+        <div class="col-6 text-end">
+          Questions or suggestions: <a class="text-reset"
+          href="mailto:leddie@invulns.nl">leddie@invulns.nl</a>
+        </div>
+      </div>
+    </footer>
   </div>
 </body>
 </html>
