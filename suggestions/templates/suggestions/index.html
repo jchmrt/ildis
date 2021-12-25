@@ -23,7 +23,7 @@
   <p>
     For this year, the display will start counting down to the new year. Once we enter 2020, the
     display will show any images <em>you</em> submit. So if you have a wish for the new year, or
-    simply want to send a nice message to the students of Hoogeveldt, <span class="text-success
+    simply want to send a nice message to someone or everyone at Hoogeveldt, <span class="text-success
     fw-bold">submit it in the form below!</span>
 </div>
 
@@ -40,23 +40,25 @@
 
       <div class="mb-3">
         <label for="suggestion-text-input" class="form-label">
-          Message*
+          Message<span class="text-danger">*</span>
         </label>
         <input type="text" class="form-control" id="suggestion-text-input"
                maxlength="200" required
+               placeholder="Hi mom!"
                name="suggestion-text">
         <div class="form-text">
-          Keep your message short and sweet :)
+          Keep your message short and sweet
         </div>
       </div>
 
       <div class="mb-3 row">
         <div class="col-7">
           <label for="suggestion-sender-input" class="form-label">
-            Your name*
+            Your name<span class="text-danger">*</span>
           </label>
           <input type="text" class="form-control" id="suggestion-sender-input"
                  maxlength="100" required
+                 placeholder="Ada"
                  name="suggestion-sender">
         </div>
         <div class="col-5">
@@ -73,7 +75,7 @@
 
       <div class="row justify-content-between">
         <div class="text-muted fw-bold form-text col-8">
-        I will look at all messages and reserve the right to remove any messages that aren't nice.
+        I will look at all messages to check if they are nice :)
         </div> 
         <div class="col-4 text-end">
         <button type="submit" class="btn btn-success">Submit message</button>

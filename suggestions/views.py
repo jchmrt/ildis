@@ -25,8 +25,5 @@ def send(request):
                               sender_hallway = hallway_number)
     suggestion.save()
 
-    messages.success(request, """Successfully added your message!
-I will look at it and if it's nice it will be displayed as soon as
-2022 starts!
-""")
+    messages.success(request, """Successfully submitted your message!""")
     return HttpResponseRedirect(reverse('suggestions:index'))
