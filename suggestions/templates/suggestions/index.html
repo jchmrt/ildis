@@ -3,8 +3,14 @@
 
 {% block content %}
 
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
 <div class="p-5 mb-4 bg-light rounded-3">
-  <h1 class="display-6 fw-bold" style="color: #dc3545">
+  <h1 class="display-4 fw-bold" style="color: #dc3545">
     Welcome to Leddie!
   </h1>
 

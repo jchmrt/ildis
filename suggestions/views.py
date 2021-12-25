@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.contrib import messages
 
 from .models import NYSuggestion
 
@@ -23,6 +24,9 @@ def send(request):
                               sender_name = sender,
                               sender_hallway = hallway_number)
     suggestion.save()
-    
-    return HttpResponseRedirect(reverse('suggestions:index'))
 
+    messages.success(request, """Successfully added your message!
+I will look at it and if it's nice it will be displayed as soon as
+2022 starts!
+""")
+    return HttpResponseRedirect(reverse('suggestions:index'))

@@ -168,3 +168,6 @@ BOOTSTRAP5 = {
     'javascript_in_head': True,
     # TODO: set local sources
 };
+
+# To send messages between requests
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
