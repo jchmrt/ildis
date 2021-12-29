@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from iltext.iltext import Iltext
 from ilcon.waves import Waves
 from iltext.stars import Stars
+from suggestions.nye import NYE
 
 @login_required
 def index(request):
@@ -25,6 +26,8 @@ def send(request):
         ilcon.clear()
     elif text == "s":
         ilcon.send(Stars())
+    elif text == "n":
+        ilcon.send(NYE())
     else:
         background = None
 

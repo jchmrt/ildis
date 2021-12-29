@@ -5,18 +5,24 @@ from PIL import Image as image
 from django.conf import settings
 
 class Iltext:
-    def __init__(self, text, color=(255, 255, 255), background=None):
+    done = False
+
+    def __init__(self, text,
+                 color=(255, 255, 255),
+                 background=None,
+                 repeat=True):
         self.logger = logging.getLogger(__name__)
 
         self.text = text
         self.chars = [ ord(c) for c in text ]
         self.arr = self.init_arr()
-        
+
         self.t = 0.0
         self.offset = 0
 
         self.color = color
         self.background = background
+        self.repeat = repeat
 
 
     def init_arr(self):
@@ -45,7 +51,7 @@ class Iltext:
 
             arr.append([ 0 for j in range(img.height) ])
 
-                
+
         except:
             self.logger.info("Character not found: " + str(char))
 
@@ -68,6 +74,9 @@ class Iltext:
 
             if self.offset > len(self.arr) - 1:
                 self.offset = 0
+                self.done = True
+
+
 
 
     def draw_background(self, ctrl):
@@ -75,7 +84,7 @@ class Iltext:
             self.background.render(ctrl)
         else:
             ctrl.fill(0, 0, 0)
-        
+
 
     def render(self, ctrl):
         self.draw_background(ctrl)
@@ -92,4 +101,3 @@ class Iltext:
                                        self.color[2])
                 except:
                     pass
-

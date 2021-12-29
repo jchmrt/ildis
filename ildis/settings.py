@@ -42,11 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap5',
     'ildis',
-    'ilcon',
     'iltext',
     'ilcam',
     'ilbright',
     'suggestions',
+    'ilcon',
 ]
 
 MIDDLEWARE = [

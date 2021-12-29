@@ -20,9 +20,21 @@ class Controller(threading.Thread):
         self.logger = logging.getLogger(__name__)
         self.previous_time = time.monotonic()
 
-    def set_pixel(self, x, y, r, g, b):
+    def unsafe_set_pixel(self, x, y, r, g, b):
         os.write(self.fifo,
                  struct.pack("BBBBBB", 0, x, y, r, g, b))
+
+    def set_pixel(self, x, y, r, g, b):
+        rx = round(x)
+        ry = round(y)
+
+        if rx >= 0 and rx < 15 and ry >= 0 and ry < 10:
+            rr = max(0, min(255, round(r)))
+            rg = max(0, min(255, round(g)))
+            rb = max(0, min(255, round(b)))
+
+            self.unsafe_set_pixel(rx, ry, rr, rg, rb)
+
 
     def fill(self, r, g, b):
         for i in range(self.WIDTH):
@@ -43,7 +55,7 @@ class Controller(threading.Thread):
     def tick(self):
         current_time = time.monotonic()
         if self.active_il:
-            self.active_il.tick(self, current_time - self.previous_time)
+            self.active_il.tick(self, (current_time - self.previous_time))
 
         self.previous_time = current_time
         time.sleep(1 / 100)
