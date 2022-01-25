@@ -1,6 +1,7 @@
 import math
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import pytz
 
 from iltext.iltext import Iltext
 from ilcon.waves import Waves
@@ -50,7 +51,7 @@ class CountdownBuilder(IltextBuilder):
         else:
             return self.create_countdown_text()
 
-        
+
 import random
 import math
 
@@ -80,7 +81,7 @@ class Particle:
                        self.color[0] * self.bright,
                        self.color[1] * self.bright,
                        self.color[2] * self.bright)
-    
+
 
 class Firework:
     def __init__(self):
@@ -111,7 +112,7 @@ class Firework:
     @property
     def done(self):
         return self.burst and len(self.particles) == 0
-    
+
     def tick(self, ctrl, delta):
         if self.y > self.end_y:
             self.y -= delta * 18
@@ -130,8 +131,8 @@ class Firework:
             for p in self.particles:
                 p.tick(ctrl, delta)
             self.particles = [ p for p in self.particles if not p.done ]
-            
-        
+
+
     def render(self, ctrl):
         ctrl.fill(0, 0, 0)
         if not self.burst:
@@ -139,11 +140,11 @@ class Firework:
                            self.color[0] * (1 - self.dim),
                            self.color[1] * (1 - self.dim),
                            self.color[2] * (1 - self.dim))
-        
+
         for p in self.particles:
             p.render(ctrl)
-        
-        
+
+
 
 
 class Fireworks:
@@ -180,7 +181,7 @@ class NYMessageBuilder(IltextBuilder):
         super().__init__()
 
         self.n = 0
-    
+
     def get_suggestion(self):
         approved_suggestions = NYSuggestion.objects.filter(approved=True)
 
@@ -203,11 +204,13 @@ class NYMessageBuilder(IltextBuilder):
         else:
             return super().create_object()
 
+
 class TimeMessageBuilder(IltextBuilder):
     def create_text(self):
         def nstr(n):
             return str(n).zfill(2)
-        now = datetime.now()
+
+        now = datetime.now(pytz.timezone("Europe/Amsterdam"))
         hour = now.hour
         minute = now.minute
         second = now.second
@@ -261,7 +264,7 @@ class NYE:
         if secs < 0:
             self.nye_messages.render(ctrl)
         elif secs < 60:
-            ctrl.fill(0, 0, 0)            
+            ctrl.fill(0, 0, 0)
             render_center(ctrl, str(secs), time_to_color(raw_secs, secs))
         else:
             self.long_counter.render(ctrl)
@@ -289,7 +292,7 @@ def time_to_color(raw_secs, secs):
         (x, 0, x),
         (x, x, x),
     ]
-        
+
 
     return colors[index]
 
@@ -301,7 +304,7 @@ def render_center(ctrl, string, color=(255, 255, 255)):
         width = width + img.width
 
         char_imgs.append(img)
-                
+
 
     width = width + len(char_imgs) - 1
 
@@ -323,5 +326,3 @@ def render_center(ctrl, string, color=(255, 255, 255)):
                     ctrl.set_pixel(rx, ry, color[0], color[1], color[2])
 
         offset = offset + cur_img.size[0] + 1
-
-    
