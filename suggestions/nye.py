@@ -6,6 +6,8 @@ import pytz
 from iltext.iltext import Iltext
 from ilcon.waves import Waves
 
+cur_tz = pytz.timezone("Europe/Amsterdam")
+
 class IltextBuilder:
     def __init__(self):
         self.waves = Waves(0.36)
@@ -22,7 +24,7 @@ class CountdownBuilder(IltextBuilder):
         self.n = 0
 
     def create_countdown_text(self):
-        rel_date = relativedelta(self.date, datetime.now())
+        rel_date = relativedelta(self.date, datetime.now(cur_tz))
         text = ""
 
         if rel_date.weeks > 0:
@@ -210,7 +212,7 @@ class TimeMessageBuilder(IltextBuilder):
         def nstr(n):
             return str(n).zfill(2)
 
-        now = datetime.now(pytz.timezone("Europe/Amsterdam"))
+        now = datetime.now(cur_tz)
         hour = now.hour
         minute = now.minute
         second = now.second
@@ -237,11 +239,10 @@ class ObjectsRenderer:
 
 class NYE:
     def seconds_to_ny(self):
-        return (self.ny_date - datetime.now()).total_seconds()
+        return (self.ny_date - datetime.now(cur_tz)).total_seconds()
 
     def __init__(self):
-        self.ny_date = datetime(2022, 1, 1, 0, 0)
-        #self.ny_date = datetime.now() + relativedelta(seconds=+6)
+        self.ny_date = datetime(2022, 1, 1, 0, 0, 0, 0, cur_tz)
 
         countdown_builder = CountdownBuilder(self.ny_date)
         self.long_counter = ObjectsRenderer(countdown_builder)
