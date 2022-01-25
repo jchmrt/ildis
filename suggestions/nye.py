@@ -149,7 +149,7 @@ class Firework:
 class Fireworks:
     def __init__(self):
         self.elapsed = 0
-        self.time = 25
+        self.time = 15
 
         self.firework = Firework()
 
@@ -202,6 +202,18 @@ class NYMessageBuilder(IltextBuilder):
             return Fireworks()
         else:
             return super().create_object()
+
+class TimeMessageBuilder(IltextBuilder):
+    def create_text(self):
+        def nstr(n):
+            return str(n).zfill(2)
+        now = datetime.now()
+        hour = now.hour
+        minute = now.minute
+        second = now.second
+
+        return nstr(hour) + ":" + nstr(minute) + ":" + nstr(second)
+
 
 class ObjectsRenderer:
 
