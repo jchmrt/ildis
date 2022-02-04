@@ -55,7 +55,7 @@ class Snake:
         next_tile = self.grid[ny][nx]
 
         if isinstance(next_tile, SnakeTile):
-            return False
+            return True
         else:
             self.grid[ny][nx] = SnakeTile()
             self.tiles.append((nx, ny))
@@ -65,6 +65,8 @@ class Snake:
                 self.grid[oy][ox] = EmptyTile()
             else:
                 self.game.add_food()
+
+            return False
 
 
 
@@ -109,14 +111,17 @@ class SnakeGame:
         if not self.input_queue.empty():
             direction = self.input_queue.get()
 
-        self.snake.move(direction)
+        return self.snake.move(direction)
 
     def tick(self, ctrl, delta):
         self.cur_t += delta
 
         if self.cur_t >= self.MOVE_TIME:
             self.cur_t = 0
-            self.execute_move()
+            return self.execute_move()
+        else:
+            return False
+        
 
     def render(self, ctrl):
         ctrl.fill(0, 0, 0)
@@ -130,3 +135,18 @@ class SnakeGame:
                     ctrl.set_pixel(i, j, 0, 255, 0)
 
         ctrl.render()
+
+
+class SnakeGameWrapper:
+    def __init__(self):
+        self.game = SnakeGame()
+
+    def put(self, item):
+        self.game.input_queue.put(item)
+
+    def tick(self, ctrl, delta):
+        if self.game.tick(ctrl, delta):
+            self.game = SnakeGame()
+
+    def render(self, ctrl):
+        self.game.render(ctrl)
