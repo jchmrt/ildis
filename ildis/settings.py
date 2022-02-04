@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'ilcam',
     'ilbright',
     'suggestions',
+    'snake',
     'ilcon',
 ]
 

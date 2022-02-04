@@ -1,0 +1,30 @@
+{% extends "base_public.html" %}
+
+{% block head %}
+{% load static %}
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+
+{% endblock %}
+
+
+{% block content %}
+
+<script>
+  function send(dir) {
+    $.post('send/', { "direction": dir,
+                      csrfmiddlewaretoken: '{{ csrf_token }}' }, function () {
+    });
+
+  }
+</script>
+
+<button onclick="send('n')">Up</button>
+<br>
+<button onclick="send('w')">Left</button>
+<button onclick="send('e')">Right</button>
+<br>
+<button onclick="send('s')">Down</button>
+
+
+{% endblock %}

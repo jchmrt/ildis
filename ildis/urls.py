@@ -21,6 +21,7 @@ app_name = 'ildis'
 
 urlpatterns = [
     path('', include('suggestions.urls')),
+    path('snake/', include('snake.urls')),
     path('admin/', views.index_admin, name='index_admin'),
     path('admin/brightness/', include('ilbright.urls')),
     path('admin/text/', include('iltext.urls')),
