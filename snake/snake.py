@@ -96,7 +96,6 @@ class SnakeGame(Disp):
                     empties += 1
 
         index = random.randrange(empties)
-        print(index)
 
         for i in range(self.WIDTH):
             for j in range(self.HEIGHT):
