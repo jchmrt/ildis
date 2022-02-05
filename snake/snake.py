@@ -2,6 +2,8 @@ import random
 import queue
 from enum import Enum
 
+from ildis.ildis import Disp
+
 class EmptyTile:
     pass
 
@@ -17,7 +19,7 @@ class Direction(Enum):
     WEST = 3
     EAST = 4
 
-class Snake:
+class Snake(Disp):
     INIT_LEN = 3
 
     def __init__(self, game):
@@ -70,7 +72,7 @@ class Snake:
 
 
 
-class SnakeGame:
+class SnakeGame(Disp):
     WIDTH = 15
     HEIGHT = 10
     MOVE_TIME = 0.3
@@ -101,9 +103,6 @@ class SnakeGame:
                 if isinstance(self.grid[j][i], EmptyTile):
                     index -= 1
                     if index == 0:
-                        print("putting it at")
-                        print(i)
-                        print(j)
                         self.grid[j][i] = FoodTile()
 
     def execute_move(self):
@@ -137,7 +136,7 @@ class SnakeGame:
         ctrl.render()
 
 
-class SnakeGameWrapper:
+class SnakeGameWrapper(Disp):
     def __init__(self):
         self.game = SnakeGame()
 

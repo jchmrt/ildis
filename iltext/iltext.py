@@ -1,10 +1,11 @@
 import logging
 
 from PIL import Image as image
-
 from django.conf import settings
 
-class Iltext:
+from ildis.ildis import Disp
+
+class Iltext(Disp):
     done = False
 
     def __init__(self, text,

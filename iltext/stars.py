@@ -1,4 +1,6 @@
 import random
+from ildis.ildis import Disp
+
 import math
 
 def gc(x, gamma=2.1):
@@ -8,7 +10,7 @@ def rcol(x):
     return min(255, max(0, round(x)))
 
 
-class Star:
+class Star(Disp):
     def __init__(self):
         def tocol(x):
             return min(255, max(0, round(x * 255)))
@@ -49,7 +51,7 @@ class Star:
             
 
 
-class Stars:
+class Stars (Disp):
     def __init__(self):
         self.stars = []
         self.back_col = [0,0,0]

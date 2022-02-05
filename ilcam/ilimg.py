@@ -1,10 +1,12 @@
+from ildis.ildis import Disp
+
 import math
 
 def gc(x, gamma=2.4):
     return round(math.pow(float(x) / 255.0, gamma) * 255.0);
 
 
-class Ilimg:
+class Ilimg(Disp):
     def __init__(self, pixels):
         self.pixels = pixels
         self.rendered = False

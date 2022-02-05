@@ -3,6 +3,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import pytz
 
+from ildis.ildis import Disp
 from iltext.iltext import Iltext
 from ilcon.waves import Waves
 
@@ -58,7 +59,7 @@ import random
 import math
 
 
-class Particle:
+class Particle(Disp):
     def __init__(self, color, x, y, direction, speed):
         self.x = x
         self.y = y
@@ -85,7 +86,7 @@ class Particle:
                        self.color[2] * self.bright)
 
 
-class Firework:
+class Firework(Disp):
     def __init__(self):
         self.x = random.randrange(15)
         self.end_y = 2 + random.randrange(5)
@@ -149,7 +150,7 @@ class Firework:
 
 
 
-class Fireworks:
+class Fireworks(Disp):
     def __init__(self):
         self.elapsed = 0
         self.time = 15
@@ -220,7 +221,7 @@ class TimeMessageBuilder(IltextBuilder):
         return nstr(hour) + ":" + nstr(minute) + ":" + nstr(second)
 
 
-class ObjectsRenderer:
+class ObjectsRenderer(Disp):
 
     def __init__(self, obj_builder):
         self.obj_builder = obj_builder
@@ -237,7 +238,7 @@ class ObjectsRenderer:
 
 
 
-class NYE:
+class NYE(Disp):
     def seconds_to_ny(self):
         return (self.ny_date - datetime.now(cur_tz)).total_seconds()
 
