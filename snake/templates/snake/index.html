@@ -11,13 +11,33 @@
 {% block content %}
 
 <script>
-  function send(dir) {
-    $.post('send/', { "direction": dir,
-                      csrfmiddlewaretoken: '{{ csrf_token }}' }, function () {
-    });
+  let socket;
+  let protocol = window.location.protocol === "https" ? "wss://" : "ws://";
+  let prefix = protocol + window.location.host + "/ws/snake/";
+  connect();
 
+  function receiveMessage(msg) {
+    console.log(msg);
+  }
+  
+  function connect() {
+    socket = new WebSocket(prefix + "connect/")
+    socket.addEventListener('message', receiveMessage);
+  }
+
+  function send(dir) {
+    socket.send(JSON.stringify({ direction: dir }))
   }
 </script>
+<style>
+  main#content {
+      text-align: center;
+  }
+  button {
+      font-size: 350%;
+      width: 3.5em
+  }
+</style>
 
 <button onclick="send('n')">Up</button>
 <br>

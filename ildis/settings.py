@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ["192.168.2.169", "213.124.164.79", "leddie.nl", "localhost"]
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -172,3 +173,7 @@ BOOTSTRAP5 = {
 
 # To send messages between requests
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# For channels (websockets/ASGI)
+# https://channels.readthedocs.io/en/stable/tutorial/part_1.html
+ASGI_APPLICATION = "ildis.asgi.application"
