@@ -12,7 +12,7 @@
 
 <script>
   let socket;
-  let protocol = window.location.protocol === "https" ? "wss://" : "ws://";
+  let protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
   let prefix = protocol + window.location.host + "/ws/snake/";
   connect();
 
