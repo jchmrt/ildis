@@ -14,12 +14,68 @@
   let socket;
   let protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
   let prefix = protocol + window.location.host + "/ws/snake/";
-  connect();
+  let touchStartX = 0, touchStartY = 0;
+  document.body.onload = setup;
+
+  function setup() {
+    connect();
+
+
+    document.addEventListener("keydown", function (e) {
+      keyDownHandler(e);
+    }, false);
+    document.addEventListener("touchstart", function (e) {
+      touchStart(e.changedTouches[0]);
+    }, false);
+    document.addEventListener("touchend", function (e) {
+      touchEnd(e.changedTouches[0]);
+    }, false);
+  }
 
   function receiveMessage(msg) {
     console.log(msg);
   }
   
+  function touchStart(e) {
+    touchStartX = e.clientX;
+    touchStartY = e.clientY;
+  }
+
+  function touchEnd(e) {
+    let endX = e.clientX;                                    
+    let endY= e.clientY;
+
+    let diffX = touchStartX - endX;
+    let diffY = touchStartY - endY;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
+        send("w");
+      } else {
+        send("e");
+      }
+    } else {
+      if (diffY > 0) {
+        send("n");
+      } else {
+        send("s");
+      }
+    }
+  }
+
+  function keyDownHandler(e) {
+    if (e.key == "Right" || e.key == "ArrowRight" || e.key == "d") {
+      send("e")
+    } else if (e.key == "Left" || e.key == "ArrowLeft" || e.key == "a") {
+      send("w")
+    } else if (e.key == "Up" || e.key == "ArrowUp" || e.key == "w") {
+      send("n")
+    } else if (e.key == "Down" || e.key == "ArrowDown" || e.key == "s") {
+      send("s")
+    }
+  }
+
+
   function connect() {
     socket = new WebSocket(prefix + "connect/")
     socket.addEventListener('message', receiveMessage);
@@ -29,23 +85,5 @@
     socket.send(JSON.stringify({ direction: dir }))
   }
 </script>
-<style>
-  main#content {
-      text-align: center;
-  }
-  button {
-      font-size: 350%;
-      width: 3.5em;
-      height: 2.5em;
-  }
-</style>
-
-<button onclick="send('n')">Up</button>
-<br>
-<button onclick="send('w')">Left</button>
-<button onclick="send('e')">Right</button>
-<br>
-<button onclick="send('s')">Down</button>
-
 
 {% endblock %}
