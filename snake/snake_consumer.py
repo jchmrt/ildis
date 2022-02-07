@@ -1,27 +1,29 @@
-import json
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import JsonWebsocketConsumer
 
 from django.apps import apps
 from snake.snake import SnakeGameWrapper, Direction
 
+import queue
+
 snake_wrapper = None
 
-class SnakeConsumer(WebsocketConsumer):
+class SnakeConsumer(JsonWebsocketConsumer):
     def connect(self):
         global snake_wrapper
-        snake_wrapper = SnakeGameWrapper()
+        snake_wrapper = SnakeGameWrapper(self)
 
         ilcon = apps.get_app_config('ilcon').ilcon
         ilcon.send(snake_wrapper)
+
+        self.input_queue = queue.Queue()
 
         self.accept()
 
     def disconnect(self, close_code):
         pass
 
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        direction = text_data_json['direction']
+    def receive_json(self, content):
+        direction = content['direction']
 
         if direction == "n":
             direction = Direction.NORTH
@@ -34,4 +36,4 @@ class SnakeConsumer(WebsocketConsumer):
         else:
             return
 
-        snake_wrapper.put(direction)
+        self.input_queue.put(direction)

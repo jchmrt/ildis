@@ -32,8 +32,18 @@
     }, false);
   }
 
-  function receiveMessage(msg) {
-    console.log(msg);
+  function receiveMessage(messageObject) {
+    msg = JSON.parse(messageObject.data);
+
+    if (msg.score) {
+      updateScore(msg.score);
+    }
+  }
+
+  function updateScore(score) {
+    let scoreSpan = document.getElementById("score");
+
+    scoreSpan.innerText = score;
   }
   
   function touchStart(e) {
@@ -85,5 +95,8 @@
     socket.send(JSON.stringify({ direction: dir }))
   }
 </script>
+
+<h1 id="score" class="display-1 text-center">0</h1>
+
 
 {% endblock %}

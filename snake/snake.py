@@ -1,5 +1,4 @@
 import random
-import queue
 from enum import Enum
 
 from ildis.ildis import Disp
@@ -19,14 +18,23 @@ class Direction(Enum):
     WEST = 3
     EAST = 4
 
+    def is_irrelevant(self, other):
+        if self is Direction.NORTH or self is Direction.SOUTH:
+            return other is Direction.NORTH or other is Direction.SOUTH
+        else:
+            return other is Direction.WEST or other is Direction.EAST
+
+
 class Snake(Disp):
     INIT_LEN = 3
 
-    def __init__(self, game):
+    def __init__(self, game, consumer):
         self.game = game
         self.grid = game.grid
         self.tiles = []
         self.direction = Direction.EAST
+        self.consumer = consumer
+        self.score = 0
 
         for i in range(self.INIT_LEN):
             self.grid[0][i] = SnakeTile()
@@ -35,9 +43,27 @@ class Snake(Disp):
     def cur_pos(self):
         return self.tiles[-1]
 
+    def increment_score(self):
+        self.score += 1
+        self.consumer.send_json({ "score": self.score })
 
-    def move(self, direction):
-        self.direction = direction
+    def discard_moves(self):
+        while not self.consumer.input_queue.empty():
+            next_dir = self.consumer.input_queue.queue[0]
+            if self.direction.is_irrelevant(next_dir):
+                self.consumer.input_queue.get()
+            else:
+                return
+
+    def process_moves(self):
+        self.discard_moves()
+
+        if not self.consumer.input_queue.empty():
+            self.direction = self.consumer.input_queue.get()
+
+    def move(self):
+        self.process_moves()
+        direction = self.direction
 
         dx = 0
         dy = 0
@@ -65,7 +91,8 @@ class Snake(Disp):
             if isinstance(next_tile, EmptyTile):
                 ox, oy = self.tiles.pop(0)
                 self.grid[oy][ox] = EmptyTile()
-            else:
+            else:               # Eating food:
+                self.increment_score()
                 self.game.add_food()
 
             return False
@@ -77,16 +104,16 @@ class SnakeGame(Disp):
     HEIGHT = 10
     MOVE_TIME = 0.3
 
-    def __init__(self):
+    def __init__(self, consumer):
         self.grid = [ [ EmptyTile()
                         for x in range(self.WIDTH) ]
                       for y in range(self.HEIGHT) ]
 
-        self.snake = Snake(self)
+        self.snakes = []
         self.add_food()
+        self.snake = Snake(self, consumer)
 
         self.cur_t = 0
-        self.input_queue = queue.Queue()
 
     def add_food(self):
         empties = 0
@@ -105,11 +132,7 @@ class SnakeGame(Disp):
                         self.grid[j][i] = FoodTile()
 
     def execute_move(self):
-        direction = self.snake.direction
-        if not self.input_queue.empty():
-            direction = self.input_queue.get()
-
-        return self.snake.move(direction)
+        return self.snake.move()
 
     def tick(self, ctrl, delta):
         self.cur_t += delta
@@ -136,15 +159,13 @@ class SnakeGame(Disp):
 
 
 class SnakeGameWrapper(Disp):
-    def __init__(self):
-        self.game = SnakeGame()
-
-    def put(self, item):
-        self.game.input_queue.put(item)
+    def __init__(self, consumer):
+        self.game = SnakeGame(consumer)
+        self.consumer = consumer
 
     def tick(self, ctrl, delta):
         if self.game.tick(ctrl, delta):
-            self.game = SnakeGame()
+            self.game = SnakeGame(self.consumer)
 
     def render(self, ctrl):
         self.game.render(ctrl)
