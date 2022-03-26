@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from iltext.iltext import Iltext
 from ilcon.waves import Waves
 from iltext.stars import Stars
+from iltext.fire import Fire
 from suggestions.nye import NYE, ObjectsRenderer, TimeMessageBuilder
 
 @login_required
@@ -30,6 +31,8 @@ def send(request):
         ilcon.send(NYE())
     elif text == "t":
         ilcon.send(ObjectsRenderer(TimeMessageBuilder()))
+    elif text == "f":
+        ilcon.send(Fire())
     else:
         background = None
 
