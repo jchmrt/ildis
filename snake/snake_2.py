@@ -253,8 +253,16 @@ class SnakeGame(Disp):
             else:
                 self.waiting.append(consumer)
 
+    def find_id(self):
+        ids = [0, 1, 2]
+        for snake in self.snakes:
+            ids.remove(snake.snake_id)
+
+        return ids[0]
+
     def add_snake(self, consumer):
-        snake = Snake(self, len(self.snakes), consumer)
+        snake_id = self.find_id()
+        snake = Snake(self, snake_id, consumer)
         self.snakes.append(snake)
 
     def remove_snake(self, snake):
@@ -312,4 +320,3 @@ class SnakeGame(Disp):
                     ctrl.set_pixel(i, j, 255, 255, 255)
 
         ctrl.render()
-                    
