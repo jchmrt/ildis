@@ -8,9 +8,9 @@ class FireParticle(Disp):
         self.x = random.randrange(0, 15)
         self.y = 9
 
-        self.move_time = 0.09 + random.random() * 0.06
+        self.move_time = 0.20 + random.random() * 0.11
         self.cur_t = 0
-        self.decay = 1 + random.random() * 2
+        self.decay = 0.5 + random.random() * 0.8
 
         self.value = 1
 
@@ -39,9 +39,10 @@ class FireParticle(Disp):
 
     COLOR_GRADIENT = [
         (0.0, (1, 0, 0)),
-        (0.4, (1, 1 ,0)),
-        (0.6, (1, 0.5, 0)),
-        (0.9, (0.4, 0, 0)),
+        (0.25, (1, 0.4 ,0.0)),
+        (0.35, (1, 0.35, 0)),
+        (0.75, (1, 0.24, 0)),
+	(0.85, (0.6, 0, 0)),
         (1.0, (0, 0, 0)),
     ]
 
@@ -58,9 +59,12 @@ class FireParticle(Disp):
     
 
     def get_color(self):
+        def gc(x, gamma=2.4):
+            return round(math.pow(float(x) / 255.0, gamma) * 255.0);
+
         cur = 1 - self.value
         r, g, b = self.pixel(cur*100, map=self.COLOR_GRADIENT)
-        return r * 255, g * 255, b * 255
+        return gc(r * 255), gc(g * 255), gc(b * 255)
 
 
     def render(self, ctrl):
@@ -74,14 +78,15 @@ class FireParticle(Disp):
 class Fire(Disp):
     def __init__(self):
         self.particles = []
+        self.to_add = 0
 
-        pass
 
     def tick(self, ctrl, delta):
-        rand = random.random()
-        cutoff = 20 * delta
-        if rand < cutoff and len(self.particles) < 1000:
-            n_new = max(8, round(cutoff / rand))
+        self.to_add += delta * 80
+
+        if self.to_add > 1:
+            n_new = round(self.to_add)
+            self.to_add = 0
             for i in range(n_new):
                 self.particles.append(FireParticle())
                 
