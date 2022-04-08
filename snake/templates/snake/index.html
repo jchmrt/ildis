@@ -18,7 +18,11 @@
   document.body.onload = setup;
 
   function setup() {
-    connect();
+    $("#start-form").submit(startGame);
+  }
+
+  function setupGame(name, hall) {
+    connect(name, hall);
 
 
     document.addEventListener("keydown", function (e) {
@@ -30,6 +34,24 @@
     document.addEventListener("touchend", function (e) {
       touchEnd(e.changedTouches[0]);
     }, false);
+  }
+
+  function startGame(e) {
+    e.preventDefault();
+    $("#start-form").hide()
+    $("#score").show()
+
+    let formData = new FormData(document.querySelector('#start-form'))
+    let name = formData["name"];
+    let hall = formData["hall"];
+
+    if (!name) name = "";
+    if (!hall) hall = "";
+
+    console.log(name);
+    console.log(hall);
+
+    setupGame(name, hall);
   }
 
   function receiveMessage(messageObject) {
@@ -86,17 +108,96 @@
   }
 
 
-  function connect() {
+  function connect(name, hall) {
     socket = new WebSocket(prefix + "connect/")
     socket.addEventListener('message', receiveMessage);
+
+    socket.onopen = function () {
+      socket.send(JSON.stringify({msg: "new",
+                                  name: name,
+                                  hall: hall}));
+    };
   }
 
   function send(dir) {
-    socket.send(JSON.stringify({ direction: dir }))
+    socket.send(JSON.stringify({ msg: "dir",
+                                 direction: dir }))
   }
 </script>
 
-<h1 id="score" class="display-1 text-center">0</h1>
+<style>
+  .attention {
+      color: black;
+      background-color: #fff28f;
+      padding: 0.2em;
+      box-decoration-break: clone;
+  }
+  .explanation img {
 
+
+      background-color: #ccc;
+  }
+</style>
+
+<div id="start-screen">
+  <div class="row justify-content-between explanation" hidden>
+    <div class="col-4 card">
+      <img class="card-img-top"
+        src="/static/img/snake/explanation-1.png">
+      <p class="card-body">
+        Don't look at your phone, look at the <span class="attention">Leddie screen on the window</span>!
+      </p>
+    </div>
+    <div class="col-4 card">
+      <img class="card-img-top"
+        src="/static/img/snake/explanation-2.png">
+      <p class="card-body">
+        Change direction by swiping on <span class="attention">your
+          phone</span>
+      </p>
+    </div>
+    <div class="col-4 card">
+      <img class="card-img-top"
+        src="/static/img/snake/explanation-3.png">
+      <p class="card-body">
+        Avoid obstacles and collect food to score points!
+      </p>
+    </div>
+  </div>
+
+  <form id="start-form">
+    <div class="mb-3 row">
+      <div class="col">
+        <label class="form-label">
+          Name
+        </label>
+        <input class="form-control"
+               type="text"
+               maxlength="3"
+               placeholder="ABC"
+               name="name"
+               >
+      </div>
+      <div class="col">
+        <label class="form-label">
+          Hall
+        </label> 
+        <input class="form-control"
+               type="number"
+               min="1"
+               max="150"
+               placeholder="99"
+               name="hall"
+               >
+      </div>
+    </div>
+
+    <div class="mb-3 text-center">
+      <button type="submit" class="btn btn-success fs-1">Play</button>
+    </div>
+  </form>
+
+  <h1 id="score" class="display-1 text-center" style="display: none">0</h1>
+</div>
 
 {% endblock %}
