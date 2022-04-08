@@ -261,7 +261,7 @@ class SnakeGame(Disp):
         return ids[0]
 
     def add_snake(self, consumer):
-        snake_id = self.find_id
+        snake_id = self.find_id()
         snake = Snake(self, snake_id, consumer)
         self.snakes.append(snake)
 
