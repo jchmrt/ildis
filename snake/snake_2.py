@@ -30,14 +30,17 @@ class Tile:
 
     def occupied(self):
         with self.lock:
-            return ((self.snake_1) or
-                    (self.snake_2))
+            return self.snake_1 and not self.snake_1.is_invisible()
 
     def move_to_spot(self, snake):
         with self.lock:
             if self.occupied():
                 return False
             else:
+                if self.snake_1:
+                    self.snake_2 = self.snake_1
+                    self.snake_2.waiting_tiles += 1
+
                 self.snake_1 = snake
                 return True
 
@@ -47,7 +50,7 @@ class Tile:
                 self.snake_1 = self.snake_2
                 self.snake_2 = None
 
-                if not self.food and self.snake_1:
+                if self.snake_1:
                     self.snake_1.activate()
             else:
                 raise Exception()
@@ -79,27 +82,34 @@ class SnakeState(Enum):
 
 class Snake:
     COLORS = [
-        (255, 255, 0),
-        (0, 0, 255),
-        (0, 255, 100),
+        ((255, 255, 0), (100, 255, 80)),
+        ((0, 0, 255), (70, 70, 255)),
+        ((0, 255, 100), (20, 140, 255)),
         ]
 
     def __init__(self, game, snake_id, consumer):
         consumer.set_snake(self)
+        self.consumer = consumer
 
-        self.color = self.COLORS[snake_id]
+        self.color = self.COLORS[snake_id][0]
+        self.consumer.send_json(
+            { "msg": "color",
+              "color": self.COLORS[snake_id][1] })
+
+
 
         self.snake_id = snake_id
         self.game = game
         self.spawn_time = 2
+        self.invisible_time = 1
         self.state = SnakeState.SPAWNING
+
         self.waiting_tiles = 0
         self.cur_t = 0
         self.tiles = []
         self.MOVE_TIME = 0.3
 
         self.direction = Direction.EAST
-        self.consumer = consumer
         self.score = 0
 
         self.lock = threading.RLock()
@@ -171,14 +181,21 @@ class Snake:
                 ox, oy = self.tiles.pop(0)
                 self.game.at(ox, oy).leave_spot(self)
 
+    def is_invisible(self):
+        return self.invisible_time > 0
+
     def tick(self, delta):
         with self.lock:
+            if self.invisible_time > 0:
+                self.invisible_time -= delta
+
             if self.state is SnakeState.WAITING:
                 pass
             elif self.state is SnakeState.SPAWNING:
-                self.spawn_time -= delta
-                if self.spawn_time < 0:
-                    self.state = SnakeState.PLAYING
+                if self.invisible_time <= 0:
+                    self.spawn_time -= delta
+                    if self.spawn_time < 0:
+                        self.state = SnakeState.PLAYING
             elif self.state is SnakeState.PLAYING:
                 self.play(delta)
             else:
@@ -195,7 +212,7 @@ class Snake:
 
     def increment_score(self):
         self.score += 1
-        self.consumer.send_json({ "score": self.score })
+        self.consumer.send_json({ "msg": "score", "score": self.score })
 
     def discard_moves(self):
         while not self.consumer.input_queue.empty():
@@ -311,6 +328,8 @@ class SnakeGame(Disp):
                     else:
                         period = 0.5
                         mod = abs(((self.cur_t % period) / period) - 0.5)
+                        if snake.is_invisible():
+                            mod *= 0.5
                         ctrl.set_pixel(i, j,
                                        snake.color[0] * mod,
                                        snake.color[1] * mod,

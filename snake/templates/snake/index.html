@@ -57,8 +57,12 @@
   function receiveMessage(messageObject) {
     msg = JSON.parse(messageObject.data);
 
-    if (msg.score) {
+    if (msg.msg === "score") {
       updateScore(msg.score);
+    } else if (msg.msg === "game_over") {
+      gameOver(); // TODO
+    } else if (msg.msg === "color") {
+      updateColor(msg.color); // TODO
     }
   }
 
@@ -67,7 +71,19 @@
 
     scoreSpan.innerText = score;
   }
-  
+
+  function gameOver() {
+    let scoreSpan = document.getElementById("score");
+
+    scoreSpan.innerText = "Game over!\n Score: " + scoreSpan.innerText;
+  }
+
+  function updateColor(color) {
+    console.log(color);
+    $("body").css("background-color", "rgb(" + color[0] + ","
+                  + color[1] + "," + color[2] + ")");
+  }
+
   function touchStart(e) {
     touchStartX = e.clientX;
     touchStartY = e.clientY;
