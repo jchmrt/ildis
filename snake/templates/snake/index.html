@@ -42,6 +42,7 @@
   let protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
   let prefix = protocol + window.location.host + "/ws/snake/";
   let touchStartX = 0, touchStartY = 0;
+  let mirror = false;
   document.body.onload = setup;
 
   function setup() {
@@ -158,9 +159,17 @@
 
     if (Math.abs(diffX) > Math.abs(diffY)) {
       if (diffX > 0) {
-        send("w");
+        if (mirror) {
+          send("e")
+        } else {
+          send("w");
+        }
       } else {
-        send("e");
+        if (mirror) {
+          send("w");
+        } else {
+          send("e");
+        }
       }
     } else {
       if (diffY > 0) {
@@ -173,9 +182,17 @@
 
   function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight" || e.key == "d") {
-      send("e")
+      if (mirror) {
+        send("w")
+      } else {
+        send("e");
+      }
     } else if (e.key == "Left" || e.key == "ArrowLeft" || e.key == "a") {
-      send("w")
+      if (mirror) {
+        send("e")
+      } else {
+        send("w");
+      }
     } else if (e.key == "Up" || e.key == "ArrowUp" || e.key == "w") {
       send("n")
     } else if (e.key == "Down" || e.key == "ArrowDown" || e.key == "s") {
