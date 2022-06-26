@@ -84,13 +84,13 @@ class Snake:
     COLORS = [
         ((255, 255, 0), (160, 255, 140)),
         ((0, 0, 255), (140, 228, 255)),
-        ((0, 255, 100), (230, 140, 255)),
+        ((255, 0, 0), (255, 140, 140)),
         ]
 
     COLOR_NAMES = [
         "green",
         "blue",
-        "purple"
+        "red"
         ]
 
     def __init__(self, game, snake_id, consumer):

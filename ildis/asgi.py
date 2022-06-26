@@ -12,9 +12,14 @@ import os
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
-import snake.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ildis.settings')
+import django
+django.setup()
+
+
+import snake.routing
+
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
