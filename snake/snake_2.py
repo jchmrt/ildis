@@ -3,6 +3,8 @@ import random
 from enum import Enum
 
 from ildis.ildis import Disp
+from iltext.iltext import Iltext
+from ilcon.waves import Waves
 
 class Direction(Enum):
     NORTH = 1
@@ -267,6 +269,11 @@ class SnakeGame(Disp):
 
         self.cur_t = 0
 
+        msg = ("     Play multiplayer SNAKE on this window! " +
+               " go to leddie.nl    Beat the high score!   " +
+               "   go to leddie.nl  ")
+        self.text = Iltext(msg, (100, 100, 100), Waves(0.15))
+
     def at(self, x, y):
         return self.grid[y][x]
 
@@ -314,12 +321,21 @@ class SnakeGame(Disp):
                         self.at(i, j).add_food()
 
     def tick(self, ctrl, delta):
-        self.cur_t += delta
+        if len(self.snakes) > 0:
+            self.cur_t += delta
 
-        for snake in self.snakes:
-            snake.tick( delta)
+            for snake in self.snakes:
+               snake.tick( delta)
+        else:
+            self.text.tick(ctrl, delta)
 
     def render(self, ctrl):
+        if len(self.snakes) > 0:
+            self.render_game(ctrl)
+        else:
+            self.text.render(ctrl)
+
+    def render_game(self, ctrl):
         ctrl.fill(0, 0, 0)
 
         for i in range(self.WIDTH):
