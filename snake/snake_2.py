@@ -319,6 +319,10 @@ class SnakeGame(Disp):
                     index -= 1
                     if index == 0:
                         self.at(i, j).add_food()
+                        return
+
+        self.add_food()
+
 
     def tick(self, ctrl, delta):
         if len(self.snakes) > 0:
