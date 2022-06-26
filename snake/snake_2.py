@@ -82,9 +82,15 @@ class SnakeState(Enum):
 
 class Snake:
     COLORS = [
-        ((255, 255, 0), (100, 255, 80)),
-        ((0, 0, 255), (70, 70, 255)),
-        ((0, 255, 100), (20, 255, 255)),
+        ((255, 255, 0), (160, 255, 140)),
+        ((0, 0, 255), (140, 228, 255)),
+        ((0, 255, 100), (230, 140, 255)),
+        ]
+
+    COLOR_NAMES = [
+        "green",
+        "blue",
+        "purple"
         ]
 
     def __init__(self, game, snake_id, consumer):
@@ -94,7 +100,8 @@ class Snake:
         self.color = self.COLORS[snake_id][0]
         self.consumer.send_json(
             { "msg": "color",
-              "color": self.COLORS[snake_id][1] })
+              "color": self.COLORS[snake_id][1],
+              "color_name" : self.COLOR_NAMES[snake_id]})
 
 
 

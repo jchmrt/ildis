@@ -4,9 +4,36 @@
 {% load static %}
 
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 
 {% endblock %}
 
+{% block nav %}
+<style>
+  #nav-brand {
+      color: #dc3545;
+      font-weight: bold;
+  }
+  #snake-brand {
+      color: #198754;
+      font-style: italic;
+  }
+  #slogan {
+      font-style: italic;
+      color: #dc3545;
+  }
+</style>
+
+<a class="navbar-brand" id="nav-brand" href="{% url 'snake:index' %}">
+  Leddie<span id="snake-brand">Snake</span>
+</a>
+
+<span id="slogan">
+  Play Snake at Hoogeveldt!
+</span>
+{% endblock %}
 
 {% block content %}
 
@@ -38,12 +65,12 @@
 
   function startGame(e) {
     e.preventDefault();
-    $("#start-form").hide()
-    $("#score").show()
+    $("#start-screen").hide()
+    $("#playing").show()
 
     let formData = new FormData(document.querySelector('#start-form'))
-    let name = formData["name"];
-    let hall = formData["hall"];
+    let name = formData.get("name");
+    let hall = formData.get("hall");
 
     if (!name) name = "";
     if (!hall) hall = "";
@@ -60,9 +87,9 @@
     if (msg.msg === "score") {
       updateScore(msg.score);
     } else if (msg.msg === "game_over") {
-      gameOver(); // TODO
+      gameOver(msg.score_key);
     } else if (msg.msg === "color") {
-      updateColor(msg.color); // TODO
+      updateColor(msg.color, msg.color_name);
     }
   }
 
@@ -72,16 +99,49 @@
     scoreSpan.innerText = score;
   }
 
-  function gameOver() {
-    let scoreSpan = document.getElementById("score");
+  function gameOver(score_key) {
+    $("#playing").hide()
+    $("#game-over").show()
+    let scoreSpan = document.getElementById("final-score");
+    scoreSpan.innerText = $("#score").text();
 
-    scoreSpan.innerText = "Game over!\n Score: " + scoreSpan.innerText;
+    updateColor([255, 255, 255], "unknown");
+
+    $.getJSON("{% url 'snake:scores'%}", function (data) {
+      let all_time = data["all_time"];
+      let all_table = $("#all-time tbody");
+      all_time.forEach(function (score, i) {
+        add_score(i+1, all_table, score, score_key);
+      });
+    });
   }
 
-  function updateColor(color) {
+  function add_score(rank, table, score, key) {
+    let tr = $("<tr>");
+    tr.append($("<td>").text(rank).attr("scope", "row"));
+    tr.append($("<td>").text(score.user_name));
+    tr.append($("<td>").text(score.user_hallway));
+    tr.append($("<td>").text(score.score));
+
+    if (score.id === key) {
+      tr.addClass("your-score");
+    }
+
+    table.append(tr);
+  }
+
+  function updateColor(color, colorName) {
     console.log(color);
-    $("body").css("background-color", "rgb(" + color[0] + ","
+
+    $("#playing").css("background-color", "rgb(" + color[0] + ","
                   + color[1] + "," + color[2] + ")");
+
+    $("#playing #color-name").css("background-color", "rgb(" +
+                                  color[0] * 0.8 + ","
+                                  + color[1] * 0.8 + "," + color[2] *
+                                  0.8 + ")");
+
+    $("#playing #color-name").text(colorName);
   }
 
   function touchStart(e) {
@@ -129,7 +189,8 @@
     socket.addEventListener('message', receiveMessage);
 
     socket.onopen = function () {
-      socket.send(JSON.stringify({msg: "new",
+      socket.send
+      (JSON.stringify({msg: "new",
                                   name: name,
                                   hall: hall}));
     };
@@ -148,10 +209,20 @@
       padding: 0.2em;
       box-decoration-break: clone;
   }
-  .explanation img {
-
-
-      background-color: #ccc;
+  .your-score {
+      background-color: #8dff64;
+  }
+  #high-scores table tr.your-score:hover {
+      background-color: #8afa60;
+  }
+  #high-scores table tr:hover {
+      background-color: #fbfbfb;
+  }
+  #high-scores {
+      margin-top: 4em;
+  }
+  #final-score {
+      text-weight: bold;
   }
   /* Fix chrome annoying swipe up to refresh behaviour */
   body {
@@ -160,31 +231,6 @@
 </style>
 
 <div id="start-screen">
-  <div class="row justify-content-between explanation" hidden>
-    <div class="col-4 card">
-      <img class="card-img-top"
-        src="/static/img/snake/explanation-1.png">
-      <p class="card-body">
-        Don't look at your phone, look at the <span class="attention">Leddie screen on the window</span>!
-      </p>
-    </div>
-    <div class="col-4 card">
-      <img class="card-img-top"
-        src="/static/img/snake/explanation-2.png">
-      <p class="card-body">
-        Change direction by swiping on <span class="attention">your
-          phone</span>
-      </p>
-    </div>
-    <div class="col-4 card">
-      <img class="card-img-top"
-        src="/static/img/snake/explanation-3.png">
-      <p class="card-body">
-        Avoid obstacles and collect food to score points!
-      </p>
-    </div>
-  </div>
-
   <form id="start-form">
     <div class="mb-3 row">
       <div class="col">
@@ -217,7 +263,172 @@
     </div>
   </form>
 
-  <h1 id="score" class="display-1 text-center" style="display: none">0</h1>
+  <div id="instruction">
+    <h1 class="text-center">How to play?</h1>
+
+    <style>
+      #instruction {
+          margin-top: 4em
+      }
+      #instruction h1 {
+          color: #dc3545;
+          font-style: italic;
+      }
+      #instruction div.container-sm {
+          max-width: 600px;
+          padding: 2em;
+      }
+      #instruction p {
+          font-size: 140%;
+      }
+      #instruction img {
+          padding: 4%;
+      }
+      #instruction #intro {
+          max-width: 750px;
+          margin: auto;
+          margin-top: 1.5em;
+          margin-bottom: 1.5em;
+          color: #444;
+          font-size: 130%
+      }
+    </style>
+
+    <p class="" id="intro">
+      Compete against your fellow Hoogeveldt residents at a classic
+      game of snake! You can play against up to two other players at
+      the same time. Simply go
+      to <a href="leddie.nl/snake">leddie.nl</a> and press
+      play. Then, look at the window to see your snake move and get as
+      many points as possible. Enter your name and hallway at the
+      start to get your high score into the hall of fame!
+    </p>
+    
+
+    <div class="container-sm">
+      <div class="row justify-content-center align-self-center">
+        <div class="col-4 justify-content-center align-self-center">
+          <img class="img-fluid"
+               src="/static/img/snake/explanation-1.png">
+        </div>
+        <p class="col-8 justify-content-center align-self-center">
+          Don't look at your phone, look at
+          the <span class="attention">LEDs screen on the
+            window</span>!
+        </p>
+      </div>
+    </div>
+
+    <div class="container-sm">
+      <div class="row justify-content-center align-self-center">
+        <div class="col-4">
+        <img class="img-fluid"
+             src="/static/img/snake/explanation-2.png">
+        </div>
+        <p class="col-8 justify-content-center align-self-center">
+          Change direction by swiping on <span class="attention">your
+            phone</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="container-sm">
+      <div class="row justify-content-center align-self-center">
+        <div class="col-4">
+        <img class="img-fluid"
+             src="/static/img/snake/explanation-3.png">
+        </div>
+        <p class="col-8 justify-content-center align-self-center">
+          Avoid obstacles and collect food to score points!
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
+
+<div id="playing" style="display: none">
+  <style>
+    #playing {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10000;
+        background-color: lightgreen;
+        text-align: center;
+        padding: 1em;
+        color: #555;
+    }
+    #score-span {
+    }
+    #score {
+        color: black;
+        font-weight: bold;
+        font-size: 320%;
+        margin-top: -0.3em;
+    }
+    #playing div {
+        max-width: 600px;
+        margin: auto;
+    }
+    #playing div.attention {
+        padding: 0.8em;
+    }
+    #playing div.attention div {
+        margin-top: 0.3em;
+        margin-bottom: 0.3em;
+    }
+    #playing #color-name {
+        color: white;
+        background-color: black;
+    }
+  </style>
+
+  <span id="score-span">
+    score
+    <div id="score">0</div>
+  </span>
+
+  <br>
+  
+  <div class="attention">
+    <div>Swipe on this screen or use the arrow keys to move your snake</div>
+    <div>Look at the window to see
+      where to go </div>
+    <div>Score points by getting the food (white spots)</div>
+    <div>The color of your snake is <span id="color-name">unknown</span></div>
+  </div>
+  
+
+  
+</div>
+
+<div id="game-over" style="display: none">
+  <div class="text-center">
+    <h1>Game over!</h1>
+
+    <p>
+      You scored <span id="final-score"></span>
+    </p>
+    <button onclick="window.location = window.location" class="btn btn-success fs-1">Play again</button>
+  </div>
+
+
+  <div id="high-scores">
+    <table class="table" id="all-time">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Name</th>
+          <th scope="col">Hallway</th>
+          <th scope="col">Score</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
 
 {% endblock %}

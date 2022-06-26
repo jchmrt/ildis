@@ -26,6 +26,7 @@
                 border-bottom
                 sticky-top">
       <div class="container-fluid">
+        {% block nav %}
         <a class="navbar-brand" style="color: #dc3545; font-weight: bold;" href="/">Leddie</a>
 
         <ul class="navbar-nav me-auto">
@@ -33,6 +34,7 @@
             <a class="nav-link" href="{% url 'index_admin'%}">Admin</a>
           </li>
         </ul>
+        {% endblock %}
       </div>
     </nav>
 
