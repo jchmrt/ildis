@@ -5,6 +5,7 @@ from django.apps import apps
 from django.contrib.auth.decorators import login_required
 
 from iltext.iltext import Iltext
+from iltext.flash_text import FlashText
 from ilcon.waves import Waves
 from iltext.stars import Stars
 from iltext.fire import Fire
@@ -39,7 +40,7 @@ def send(request):
         if waves:
             background = Waves(float(waves_bright))
 
-        iltext = Iltext("    " + text, (255, 255, 255), background)
+        iltext = FlashText("    " + text, (255, 255, 255), background)
         ilcon.send(iltext)
 
     return HttpResponseRedirect(reverse('iltext:index'))
