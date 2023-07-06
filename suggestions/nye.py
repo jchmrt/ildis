@@ -310,8 +310,8 @@ def render_center(ctrl, string, color=(255, 255, 255)):
 
     width = width + len(char_imgs) - 1
 
-    WIDTH = 15
-    HEIGHT = 10
+    WIDTH = 10
+    HEIGHT = 15
 
     pad_left = (15 - width) // 2
     offset = pad_left

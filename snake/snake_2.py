@@ -254,8 +254,8 @@ class Snake:
 
 
 class SnakeGame(Disp):
-    WIDTH = 15
-    HEIGHT = 10
+    WIDTH = 10
+    HEIGHT = 15
     MAX_SNAKES = 3
 
     def __init__(self):

@@ -100,9 +100,9 @@ class Snake(Disp):
 
 
 class SnakeGame(Disp):
-    WIDTH = 15
-    HEIGHT = 10
     MOVE_TIME = 0.3
+    WIDTH = 10
+    HEIGHT = 15
 
     def __init__(self, consumer):
         self.grid = [ [ EmptyTile()

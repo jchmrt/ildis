@@ -5,8 +5,8 @@ import logging
 import os
 
 class Controller(threading.Thread):
-    WIDTH = 15
-    HEIGHT = 10
+    WIDTH = 10
+    HEIGHT = 15
     active_il = None
     daemon=True
 
@@ -28,7 +28,7 @@ class Controller(threading.Thread):
         rx = round(x)
         ry = round(y)
 
-        if rx >= 0 and rx < 15 and ry >= 0 and ry < 10:
+        if rx >= 0 and rx < self.WIDTH and ry >= 0 and ry < self.HEIGHT:
             rr = max(0, min(255, round(r)))
             rg = max(0, min(255, round(g)))
             rb = max(0, min(255, round(b)))
