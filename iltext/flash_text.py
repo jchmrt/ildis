@@ -12,11 +12,13 @@ class FlashText(Disp):
     def __init__(self,
                  text,
                  color=(255, 255, 255),
+                 border_color=(100, 100, 100),
                  background=None,
                  repeat=True):
         self.logger = logging.getLogger(__name__)
         self.text = text
         self.color = color
+        self.border_color = border_color
         self.background = background
         self.repeat = repeat
 
@@ -25,7 +27,7 @@ class FlashText(Disp):
         self.cur_char = 0
         self.t = 0
 
-        self.time_per_letter = 0.42
+        self.time_per_letter = 0.62
         self.pause_time = 0.14
 
 
@@ -48,11 +50,11 @@ class FlashText(Disp):
 
             return arr
         except:
-            self.logger.info("Character not found: " + str(char))
+            self.logger.warn("Character not found: " + str(char))
 
     def load(self, char):
         return image.open(str(settings.BASE_DIR) +
-                          '/iltext/bitfont/' +
+                          '/iltext/bitfont-new/' +
                           str(char) +
                           ".pbm")
 
@@ -77,7 +79,7 @@ class FlashText(Disp):
             ctrl.fill(0, 0, 0)
 
     def draw_border(self, ctrl):
-        c = [100, 100, 100]
+        c = self.border_color
 
         for i in range(ctrl.WIDTH):
             ctrl.set_pixel(i, 0, c[0], c[1], c[2])
@@ -102,7 +104,7 @@ class FlashText(Disp):
                 for j in range(h):
                     try:
                         if cur_char_arr[i][j] == 255:
-                            ctrl.set_pixel(2+i, 3+j,
+                            ctrl.set_pixel(i-3, j-1,
                                            self.color[0],
                                            self.color[1],
                                            self.color[2])

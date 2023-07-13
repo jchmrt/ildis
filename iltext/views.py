@@ -40,7 +40,7 @@ def send(request):
         if waves:
             background = Waves(float(waves_bright))
 
-        iltext = FlashText("    " + text, (255, 255, 255), background)
+        iltext = FlashText("    " + text, color=(255, 255, 255), background=background)
         ilcon.send(iltext)
 
     return HttpResponseRedirect(reverse('iltext:index'))
