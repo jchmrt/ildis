@@ -12,7 +12,7 @@ class FlashText(Disp):
     def __init__(self,
                  text,
                  color=(255, 255, 255),
-                 border_color=(100, 100, 100),
+                 border_color=(60, 60, 60),
                  background=None,
                  repeat=True):
         self.logger = logging.getLogger(__name__)
