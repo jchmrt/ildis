@@ -5,12 +5,12 @@ import math
 
 class FireParticle(Disp):
     def __init__(self):
-        self.x = random.randrange(0, 15)
-        self.y = 9
+        self.x = random.randrange(0, 10)
+        self.y = 14
 
         self.move_time = 0.20 + random.random() * 0.11
         self.cur_t = 0
-        self.decay = 0.5 + random.random() * 0.8
+        self.decay = 0.3 + random.random() * 0.6
 
         self.value = 1
 
