@@ -1,9 +1,10 @@
 import threading
 import random
+import math
 from enum import Enum
 
 from ildis.ildis import Disp
-from iltext.iltext import Iltext
+from iltext.flash_text import FlashText
 from ilcon.waves import Waves
 
 class Direction(Enum):
@@ -272,7 +273,7 @@ class SnakeGame(Disp):
         msg = ("     Play multiplayer SNAKE on this window! " +
                " go to leddie.nl    Beat the high score!   " +
                "   go to leddie.nl  ")
-        self.text = Iltext(msg, (100, 100, 100), Waves(0.15))
+        self.text = FlashText(msg, (100, 100, 100), (30, 30, 30), Waves(0.15))
 
     def at(self, x, y):
         return self.grid[y][x]
@@ -339,8 +340,15 @@ class SnakeGame(Disp):
         else:
             self.text.render(ctrl)
 
+    def render_background(self, ctrl):
+        brightness = 4 + math.sin(self.cur_t * 4) * 4
+        ctrl.fill(brightness, brightness, brightness)
+
+
     def render_game(self, ctrl):
         ctrl.fill(0, 0, 0)
+
+        self.render_background(ctrl)
 
         for i in range(self.WIDTH):
             for j in range(self.HEIGHT):
