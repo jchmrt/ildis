@@ -82,7 +82,7 @@ class Particle(Disp):
         self.y += math.sin(self.direction) * delta * self.speed
         self.speed = self.speed * 0.98
 
-        self.bright *= 0.95
+        self.bright -= delta * 8
 
     def render(self, ctrl):
         ctrl.set_pixel(self.x, self.y,
@@ -123,8 +123,8 @@ class Firework(Disp):
 
     def tick(self, ctrl, delta):
         if self.y > self.end_y:
-            self.y -= delta * 18
-            self.dim *= 0.991
+            self.y -= delta * 14
+            self.dim *= 0.989
         elif not self.burst:
             self.burst = True
             for r in range(self.rounds):
@@ -144,9 +144,9 @@ class Firework(Disp):
         ctrl.fill(0, 0, 0)
         if not self.burst:
             ctrl.set_pixel(self.x, self.y,
-                           self.color[0] * (1 - self.dim),
-                           self.color[1] * (1 - self.dim),
-                           self.color[2] * (1 - self.dim))
+                           255 * (1 - self.dim),
+                           255 * (1 - self.dim),
+                           255 * (1 - self.dim))
 
         for p in self.particles:
             p.render(ctrl)
