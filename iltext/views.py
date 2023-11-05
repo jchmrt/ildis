@@ -1,19 +1,20 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.apps import apps
 from django.contrib.auth.decorators import login_required
 
-from iltext.iltext import Iltext
 from iltext.flash_text import FlashText
 from ilcon.waves import Waves
 from iltext.stars import Stars
 from iltext.fire import Fire
 from suggestions.nye import NYE, ObjectsRenderer, TimeMessageBuilder
 
+
 @login_required
 def index(request):
     return render(request, 'iltext/index.html', {})
+
 
 @login_required
 def send(request):
@@ -22,7 +23,6 @@ def send(request):
     waves_bright = request.POST['waves-bright']
 
     ilcon = apps.get_app_config('ilcon').ilcon
-
 
     if text == "" and not waves:
         ilcon.clear()
@@ -40,8 +40,8 @@ def send(request):
         if waves:
             background = Waves(float(waves_bright))
 
-        iltext = FlashText("    " + text, color=(255, 255, 255), background=background)
+        iltext = FlashText("    " + text, color=(255, 255, 255),
+                           background=background)
         ilcon.send(iltext)
 
     return HttpResponseRedirect(reverse('iltext:index'))
-
