@@ -5,4 +5,9 @@
 
 Django-based webserver to control Interactive Led DISplay.
 
+To run in debug, use:
+
+$ source venv/bin/activate
+$ ILDIS_DEBUG=TRUE daphne ildis.asgi:application
+
 License: AGPLv3 or (at your option) any later version. See COPYING.
