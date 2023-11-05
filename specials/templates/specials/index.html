@@ -1,0 +1,18 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+
+{# Display a form #}
+<form action="{% url 'specials:send' %}" method="post" class="form">
+  {% csrf_token %}
+
+  {% for special in specials %}
+  <button type="submit" name="special"
+          value="{{ special.0 }}" class="btn btn-primary">
+    {{ special.1 }}
+  </button>
+  {% endfor %}
+
+</form>
+
+{% endblock %}

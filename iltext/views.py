@@ -6,9 +6,6 @@ from django.contrib.auth.decorators import login_required
 
 from iltext.flash_text import FlashText
 from ilcon.waves import Waves
-from iltext.stars import Stars
-from iltext.fire import Fire
-from suggestions.nye import NYE, ObjectsRenderer, TimeMessageBuilder
 
 
 @login_required

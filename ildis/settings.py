@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'ilbright',
     'suggestions',
     'snake',
+    'specials',
     'ilcon',
 ]
 

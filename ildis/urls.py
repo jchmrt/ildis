@@ -26,6 +26,7 @@ urlpatterns = [
     path('admin/brightness/', include('ilbright.urls')),
     path('admin/text/', include('iltext.urls')),
     path('admin/camera/', include('ilcam.urls')),
+    path('admin/specials/', include('specials.urls')),
     path('admin/admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
 ]
