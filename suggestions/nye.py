@@ -1,13 +1,21 @@
 import math
 from datetime import datetime
+from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 import pytz
+import random
+from PIL import Image as image
+from django.conf import settings
 
 from ildis.ildis import Disp
 from iltext.iltext import Iltext
 from ilcon.waves import Waves
+from suggestions.models import NYSuggestion
 
 cur_tz = pytz.timezone("Europe/Amsterdam")
+WIDTH = 10
+HEIGHT = 15
+
 
 class IltextBuilder:
     def __init__(self):
@@ -17,6 +25,7 @@ class IltextBuilder:
         text = self.create_text()
 
         return Iltext(text, repeat=False, background=self.waves)
+
 
 class CountdownBuilder(IltextBuilder):
     def __init__(self, date):
@@ -49,14 +58,10 @@ class CountdownBuilder(IltextBuilder):
     def create_text(self):
         self.n = self.n + 1
 
-        if self.n % 3 == 0:
+        if False: #self.n % 3 == 0: # this time only the count down
             return self.create_leddie_text()
         else:
             return self.create_countdown_text()
-
-
-import random
-import math
 
 
 class Particle(Disp):
@@ -88,7 +93,7 @@ class Particle(Disp):
 
 class Firework(Disp):
     def __init__(self):
-        self.x = random.randrange(15)
+        self.x = 2 + random.randrange(6)
         self.end_y = 2 + random.randrange(5)
         self.y = 15
         self.color = self.random_color()
@@ -135,7 +140,6 @@ class Firework(Disp):
                 p.tick(ctrl, delta)
             self.particles = [ p for p in self.particles if not p.done ]
 
-
     def render(self, ctrl):
         ctrl.fill(0, 0, 0)
         if not self.burst:
@@ -146,8 +150,6 @@ class Firework(Disp):
 
         for p in self.particles:
             p.render(ctrl)
-
-
 
 
 class Fireworks(Disp):
@@ -170,17 +172,17 @@ class Fireworks(Disp):
             if self.firework.done and self.elapsed < self.time:
                 self.firework = Firework()
             elif self.firework.done:
-                self.firework = None
+                self.firework = Firework()
+                # We just keep doing fireworks :)
+#                self.firework = None
 
     def render(self, ctrl):
         if self.firework:
             self.firework.render(ctrl)
 
 
-from suggestions.models import NYSuggestion
-
 class NYMessageBuilder(IltextBuilder):
-    def  __init__(self):
+    def __init__(self):
         super().__init__()
 
         self.n = 0
@@ -222,7 +224,6 @@ class TimeMessageBuilder(IltextBuilder):
 
 
 class ObjectsRenderer(Disp):
-
     def __init__(self, obj_builder):
         self.obj_builder = obj_builder
         self.cur_obj = self.obj_builder.create_object()
@@ -237,13 +238,14 @@ class ObjectsRenderer(Disp):
         self.cur_obj.render(ctrl)
 
 
-
 class NYE(Disp):
     def seconds_to_ny(self):
         return (self.ny_date - datetime.now(cur_tz)).total_seconds()
 
     def __init__(self):
-        self.ny_date = datetime(2022, 1, 1, 0, 0, 0, 0, cur_tz)
+        self.ny_date = datetime(2024, 1, 1, 0, 0, 0, 0, cur_tz)
+        # FOR DEBUG:
+#        self.ny_date = datetime.now(cur_tz) + timedelta(seconds=20)
 
         countdown_builder = CountdownBuilder(self.ny_date)
         self.long_counter = ObjectsRenderer(countdown_builder)
@@ -271,15 +273,13 @@ class NYE(Disp):
         else:
             self.long_counter.render(ctrl)
 
-from PIL import Image as image
-
-from django.conf import settings
 
 def load(char):
     return image.open(str(settings.BASE_DIR) +
                       '/iltext/bitfont/' +
                       str(ord(char)) +
                       ".pbm")
+
 
 def time_to_color(raw_secs, secs):
     index = math.floor(secs) % 7
@@ -295,36 +295,33 @@ def time_to_color(raw_secs, secs):
         (x, x, x),
     ]
 
-
     return colors[index]
+
 
 def render_center(ctrl, string, color=(255, 255, 255)):
     char_imgs = []
-    width = 0
     for char in string:
         img = load(char)
-        width = width + img.width
 
         char_imgs.append(img)
 
+    offset = 0
 
-    width = width + len(char_imgs) - 1
-
-    WIDTH = 10
-    HEIGHT = 15
-
-    pad_left = (15 - width) // 2
-    offset = pad_left
+    if len(char_imgs) == 1:
+        offset = (HEIGHT - char_imgs[0].size[1] + 1) // 2
 
     for i in range(len(char_imgs)):
         cur_img = char_imgs[i]
         cur_pix = cur_img.load()
+
+        pad_left = (WIDTH - cur_img.size[0] + 1) // 2
+
         for x in range(cur_img.size[0]):
             for y in range(cur_img.size[1]):
-                rx = x + offset
-                ry = y
+                rx = x + pad_left
+                ry = y + offset
 
                 if cur_pix[x, y] == 255:
                     ctrl.set_pixel(rx, ry, color[0], color[1], color[2])
 
-        offset = offset + cur_img.size[0] + 1
+        offset = offset + cur_img.size[1]
