@@ -99,3 +99,63 @@ class Snow:
 
         for flake in self.flakes:
             flake.render(ctrl)
+
+
+class ChristmasTree:
+    def __init__(self, background=None):
+        self.background = background
+
+        self.lights = []
+
+        for i in range(10):
+            l = []
+            for j in range(15):
+                l.append(random.random() < 0.2)
+
+            self.lights.append(l)
+
+
+    def tick(self, ctrl, delta):
+        if self.background:
+            self.background.tick(ctrl, delta)
+
+        for i in range(10):
+            for j in range(15):
+                if self.lights[i][j] and random.random() < delta * 3.5:
+                    self.lights[i][j] = not self.lights[i][j]
+                elif not self.lights[i][j] and random.random() < delta * 0.9:
+                    self.lights[i][j] = not self.lights[i][j]
+
+    def render(self, ctrl):
+        if self.background:
+            self.background.render(ctrl)
+        
+        self.draw_green(ctrl)
+        self.draw_trunk(ctrl)
+        self.draw_star(ctrl)
+
+    def draw_green(self, ctrl):
+        for j in range(12):
+            w = (j // 2) * 2
+            s = round((ctrl.WIDTH - w) / 2)
+
+            for i in range(s, s+w):
+                if self.lights[i][j] and i > s and i < s+w-1:
+                    ctrl.set_pixel(i, j,
+                                   255, 240, 120)
+                else:
+                    ctrl.set_pixel(i, j,
+                                   0, 80, 0)
+
+
+    def draw_trunk(self, ctrl):
+        for j in range(12, 15):
+            for i in range(3, 7):
+                ctrl.set_pixel(i, j,
+                               60, 40, 20)
+
+    def draw_star(self, ctrl):
+        for j in range(0, 2):
+            for i in range(4, 6):
+                ctrl.set_pixel(i, j,
+                               255, 255, 0)

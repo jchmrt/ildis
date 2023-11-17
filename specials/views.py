@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 from specials.stars import Stars
 from specials.fire import Fire
-from specials.christmas import GreenRed, Snow
+from specials.christmas import GreenRed, Snow, ChristmasTree
 from suggestions.nye import NYE, ObjectsRenderer, TimeMessageBuilder, Fireworks
 
 SPECIALS = [
@@ -17,6 +17,8 @@ SPECIALS = [
     ("fireworks", "Fireworks", Fireworks),
     ("greenred", "Green Red", GreenRed),
     ("snow", "Snow", Snow),
+    ("christmastree", "Christmas Tree", ChristmasTree),
+    ("christmassnow", "Christmas Snow", lambda: ChristmasTree(Snow())),
 ]
 
 
