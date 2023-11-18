@@ -121,9 +121,11 @@ class ChristmasTree:
 
         for i in range(10):
             for j in range(15):
-                if self.lights[i][j] and random.random() < delta * 3.5:
+                if self.lights[i][j] and random.random() < delta * 0.35:
                     self.lights[i][j] = not self.lights[i][j]
-                elif not self.lights[i][j] and random.random() < delta * 0.9:
+                elif (not self.lights[i][j] and random.random() < delta * 0.16
+                      and not self.lights[(i-1) % 10][j]
+                      and not self.lights[(i+1) % 10][j]):
                     self.lights[i][j] = not self.lights[i][j]
 
     def render(self, ctrl):
@@ -142,17 +144,17 @@ class ChristmasTree:
             for i in range(s, s+w):
                 if self.lights[i][j] and i > s and i < s+w-1:
                     ctrl.set_pixel(i, j,
-                                   255, 240, 120)
+                                   255, 180, 30)
                 else:
                     ctrl.set_pixel(i, j,
-                                   0, 80, 0)
+                                   0, 60, 0)
 
 
     def draw_trunk(self, ctrl):
         for j in range(12, 15):
             for i in range(3, 7):
                 ctrl.set_pixel(i, j,
-                               60, 40, 20)
+                               50, 20, 2)
 
     def draw_star(self, ctrl):
         for j in range(0, 2):
