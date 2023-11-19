@@ -4,9 +4,11 @@ from django.urls import reverse
 from django.apps import apps
 from django.contrib.auth.decorators import login_required
 
+from ilcon.waves import Waves
 from specials.stars import Stars
 from specials.fire import Fire
 from specials.christmas import GreenRed, Snow, ChristmasTree
+from specials.time import TimePortrait
 from suggestions.nye import NYE, ObjectsRenderer, TimeMessageBuilder, Fireworks
 
 SPECIALS = [
@@ -19,6 +21,8 @@ SPECIALS = [
     ("snow", "Snow", Snow),
     ("christmastree", "Christmas Tree", ChristmasTree),
     ("christmassnow", "Christmas Snow", lambda: ChristmasTree(Snow())),
+    ("timeportrait", "Time Portrait", TimePortrait),
+    ("timeportraitwaves", "Time Portrait Waves", lambda: TimePortrait(Waves(0.4))),
 ]
 
 
