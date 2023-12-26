@@ -243,7 +243,7 @@ class NYE(Disp):
         return (self.ny_date - datetime.now(cur_tz)).total_seconds()
 
     def __init__(self):
-        self.ny_date = datetime(2024, 1, 1, 0, 0, 0, 0, cur_tz)
+        self.ny_date = cur_tz.localize(datetime(2024, 1, 1, 0, 0, 0, 0))
         # FOR DEBUG:
 #        self.ny_date = datetime.now(cur_tz) + timedelta(seconds=20)
 
