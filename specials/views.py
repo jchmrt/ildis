@@ -12,17 +12,18 @@ from specials.time import TimePortrait
 from suggestions.nye import NYE, ObjectsRenderer, TimeMessageBuilder, Fireworks
 
 SPECIALS = [
-    ("fire", "Fire", Fire),
-    ("stars", "Stars", Stars),
-    ("time", "Time", lambda: ObjectsRenderer(TimeMessageBuilder())),
-    ("nye", "NYE", NYE),
-    ("fireworks", "Fireworks", Fireworks),
-    ("greenred", "Green Red", GreenRed),
-    ("snow", "Snow", Snow),
-    ("christmastree", "Christmas Tree", ChristmasTree),
-    ("christmassnow", "Christmas Snow", lambda: ChristmasTree(Snow())),
-    ("timeportrait", "Time Portrait", TimePortrait),
-    ("timeportraitwaves", "Time Portrait Waves", lambda: TimePortrait(Waves(0.4))),
+    ( False, "mirror", "Mirror", lambda: do_mirror()),
+    ( True, "fire", "Fire", Fire),
+    ( True, "stars", "Stars", Stars),
+    ( True, "time", "Time", lambda: ObjectsRenderer(TimeMessageBuilder())),
+    ( True, "nye", "NYE", NYE),
+    ( True, "fireworks", "Fireworks", Fireworks),
+    ( True, "greenred", "Green Red", GreenRed),
+    ( True, "snow", "Snow", Snow),
+    ( True, "christmastree", "Christmas Tree", ChristmasTree),
+    ( True, "christmassnow", "Christmas Snow", lambda: ChristmasTree(Snow())),
+    ( True, "timeportrait", "Time Portrait", TimePortrait),
+    ( True, "timeportraitwaves", "Time Portrait Waves", lambda: TimePortrait(Waves(0.4))),
 ]
 
 
@@ -37,8 +38,21 @@ def send(request):
     ilcon = apps.get_app_config('ilcon').ilcon
 
     for option in SPECIALS:
-        if option[0] == special:
-            ilcon.send(option[2]())
+        if option[1] == special:
+
+            # special is a Disp which will run longer:
+            if option[0]:
+                ilcon.send(option[3]())
+            # special is a quick function:
+            else:
+                option[3]()
+
             break
 
     return HttpResponseRedirect(reverse('specials:index'))
+
+def do_mirror():
+    ilcon = apps.get_app_config('ilcon').ilcon
+
+    ilcon.send_mirror()
+

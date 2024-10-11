@@ -47,6 +47,9 @@ class Controller(threading.Thread):
     def set_brightness(self, b):
         os.write(self.fifo, struct.pack("BB", 3, b))
 
+    def send_mirror(self):
+        os.write(self.fifo, struct.pack("B", 4))
+
     def render_all(self):
         if self.active_il:
             self.active_il.render(self)

@@ -26,3 +26,6 @@ class Ilcon:
 
     def set_brightness(self, brightness):
         self.controller.set_brightness(brightness)
+
+    def send_mirror(self):
+        self.controller.send_mirror()
