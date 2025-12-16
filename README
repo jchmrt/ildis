@@ -11,3 +11,28 @@ $ source venv/bin/activate
 $ ILDIS_DEBUG=TRUE daphne ildis.asgi:application
 
 License: AGPLv3 or (at your option) any later version. See COPYING.
+
+
+Production setup
+================
+
+To run this in production, you need to set up (at least) the following things:
+
+- make a venv for this project (python -m venv venv)
+- load the venv and install all dependencies
+- test if you have all the dependencies by running the development version with
+  $ python3 manage.py runserver
+- Create the static files
+  $ python3 manage.py collectstatic
+- install daphne for the websockets/channels
+- test again whether the setup now works with daphne
+- add the service files of both ildis and leddie to systemd and enable and
+  start them.
+- install apache2 and apache2-mod-wsgi. Set up the apache file so that
+  the wsgi is started and the static files are served statically.
+- make sure the required files (eg database file and python files) are
+  accessible to apache, by adding them to the group www-data.
+- run apache.
+- test whether the site now works when you go to it directly on the local
+  ip.
+- set up the reverse proxy on the main server (if applicable)
